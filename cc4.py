@@ -1,7 +1,6 @@
 # Import required libraries
 import json
 import csv
-import pandas as pd
 from datetime import datetime
 
 # load data from json file
