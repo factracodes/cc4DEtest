@@ -7,9 +7,15 @@ from datetime import datetime
 with open('restaurant_data.json', 'r', encoding="utf8") as json_file: # encoding is used to decode the raw data file
     data = json.load(json_file)
 
+# initialise country codes into a dictionary
+with open('Country-Code.csv', 'r') as country_file:
+    country_codes = {}
+    country_reader = csv.DictReader(country_file)
+    for row in country_reader:
+        country_codes.update({row['Country Code']:row['Country']})
+
 # initialize dictionary with each rating being a list, for question 3
 ratings = {'Excellent': [], 'Very Good': [], 'Good': [], 'Average': [], 'Poor': []}
-
 
 # write to the csv with similar encoding
 with open('restaurant_data.csv', 'w', newline='', encoding="utf8") as rest_data, open('restaurant_events.csv', 'w', newline='', encoding="utf8") as event_data:
@@ -33,7 +39,14 @@ with open('restaurant_data.csv', 'w', newline='', encoding="utf8") as rest_data,
             rest = rest['restaurant']
             id = rest['id']
             name = rest['name']
-            country = rest['location']['country_id']
+            country_id = str(rest['location']['country_id'])
+            
+            # filter out unknown country id
+            if country_id not in country_codes.keys():
+                country = "Dummy"
+            else:
+                country = country_codes[country_id]
+
             city = rest['location']['city']
             user_votes= rest['user_rating']['votes']
             user_agr_rating = float(rest['user_rating']['aggregate_rating'])
